@@ -1,7 +1,6 @@
 package ru.aniby.felmonapi.database;
 
-import lombok.Getter;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
@@ -15,8 +14,8 @@ public class MySQL {
             url += "?autoReconnect=true&initialTimeout=1&useSSL=false";
             return DriverManager.getConnection(url, user, password);
 
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
+        } catch (SQLException ignored) {
+            return null;
         }
     }
 
@@ -29,7 +28,9 @@ public class MySQL {
         }
     }
 
-    public static void disconnect(Connection connection) {
+    public static void disconnect(@Nullable Connection connection) {
+        if (connection == null)
+            return;
         try { connection.close(); } catch(SQLException ignored) { /*can't do anything */ }
     }
 }
