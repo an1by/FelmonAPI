@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import ru.aniby.felmonapi.category.FelmonComponent;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
@@ -20,6 +21,10 @@ public class FelmonConfigurator {
     private FileConfiguration fileConfiguration;
     private final Class<?> configurationClass;
     public FelmonConfigurator(@NotNull String fileName, @NotNull JavaPlugin plugin, Class<?> configurationClass) {
+        File dir = new File(plugin.getDataFolder().toURI());
+        if (!dir.exists())
+            dir.mkdirs();
+
         this.path = Path.of(plugin.getDataFolder().getPath(), fileName);
         this.fileConfiguration = ConfiguratorUtils.get(this.path);
         this.configurationClass = configurationClass;
