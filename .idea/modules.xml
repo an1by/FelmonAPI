@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/FelmonAPI.iml" filepath="$PROJECT_DIR$/FelmonAPI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/felmonapi.iml" filepath="$PROJECT_DIR$/felmonapi.iml" />
     </modules>
   </component>
 </project>

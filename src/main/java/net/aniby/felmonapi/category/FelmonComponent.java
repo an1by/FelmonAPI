@@ -1,14 +1,23 @@
-package ru.aniby.felmonapi.category;
+package net.aniby.felmonapi.category;
 
-import lombok.Getter;
+import net.aniby.felmonapi.FelmonUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
-public record FelmonComponent(@Getter @NotNull String source) {
+public class FelmonComponent {
+    private final @NotNull String source;
+
+    public String getSource() {
+        return source;
+    }
+
+    public FelmonComponent(@NotNull String source) {
+        this.source = source;
+    }
+
     public @NotNull Component getComponent() {
-        return LegacyComponentSerializer.legacyAmpersand().deserialize(this.source);
+        return FelmonUtils.Text.deserialize(this.source);
     }
 
     public @NotNull String getText() {

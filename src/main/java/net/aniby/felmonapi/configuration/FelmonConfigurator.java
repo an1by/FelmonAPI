@@ -1,11 +1,13 @@
-package ru.aniby.felmonapi.configuration;
+package net.aniby.felmonapi.configuration;
 
-import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Item;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import ru.aniby.felmonapi.category.FelmonComponent;
+import net.aniby.felmonapi.category.FelmonComponent;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,8 +18,12 @@ import java.nio.file.Path;
 import java.util.*;
 
 public class FelmonConfigurator {
-    @Getter
     private final @NotNull Path path;
+
+    public Path getPath() {
+        return path;
+    }
+
     private FileConfiguration fileConfiguration;
     private final Class<?> configurationClass;
     public FelmonConfigurator(@NotNull String fileName, @NotNull JavaPlugin plugin, Class<?> configurationClass) {
@@ -60,6 +66,16 @@ public class FelmonConfigurator {
                 } else if (field.getType().equals(FelmonComponent.class)) {
                     String stringVal = fileConfiguration.getString(path, "");
                     value = new FelmonComponent(stringVal);
+                } else if (field.getType().equals(ItemStack.class)) {
+                    ConfigurationSection section = fileConfiguration.getConfigurationSection(path);
+                    if (section != null) {
+                        Map<String, Object> map = section.getValues(true);
+                        Bukkit.getLogger().info(path + " : " + map);
+                        if (!map.isEmpty())
+                            value = ItemStack.deserialize(
+                                    map
+                            );
+                    }
                 } else {
                     value = fileConfiguration.get(path, null);
                 }
@@ -103,7 +119,7 @@ public class FelmonConfigurator {
         return list;
     }
 
-    public void saveDefault(boolean replace) {
+    public void save(boolean replace) {
         if (!replace) {
             if (!fileConfiguration.saveToString()
                     .replaceAll(" ", "")

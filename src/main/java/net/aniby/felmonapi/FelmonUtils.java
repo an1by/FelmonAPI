@@ -1,5 +1,7 @@
-package ru.aniby.felmonapi;
+package net.aniby.felmonapi;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -8,6 +10,7 @@ import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class FelmonUtils {
     public static class Text {
@@ -17,6 +20,10 @@ public class FelmonUtils {
 
         public static @NotNull String formatForDiscord(@NotNull String text) {
             return text.replaceAll("_", "\\_");
+        }
+
+        public static @NotNull Component deserialize(@NotNull String source) {
+            return LegacyComponentSerializer.legacyAmpersand().deserialize(source);
         }
     }
 
@@ -78,26 +85,32 @@ public class FelmonUtils {
             string = string
                     .replaceAll("^\\[|]$", "") // [] removing
                     .replaceAll(", ", ","); // all types of ,
-            List<String> splitted = new ArrayList<>(Arrays.stream(string.split(",")).toList());
+            List<String> split = new ArrayList<>(Arrays.stream(string.split(",")).toList());
             try {
+                Stream<String> stream = split.stream();
                 if (_class == int.class || _class == Integer.class) {
                     return new ArrayList<>(
-                            (Collection<? extends T>) splitted.stream().map(Integer::parseInt).toList()
+                            (Collection<? extends T>) stream.map(Integer::parseInt).toList()
                     );
                 }
                 if (_class == double.class || _class == Double.class) {
                     return new ArrayList<>(
-                            (Collection<? extends T>) splitted.stream().map(Double::parseDouble).toList()
+                            (Collection<? extends T>) stream.map(Double::parseDouble).toList()
                     );
                 }
                 if (_class == float.class || _class == Float.class) {
                     return new ArrayList<>(
-                            (Collection<? extends T>) splitted.stream().map(Float::parseFloat).toList()
+                            (Collection<? extends T>) stream.map(Float::parseFloat).toList()
+                    );
+                }
+                if (_class == Long.class || _class == long.class) {
+                    return new ArrayList<>(
+                            (Collection<? extends T>) stream.map(Long::parseLong).toList()
                     );
                 }
                 if (_class == String.class || _class == short.class || _class == Short.class) {
-                    splitted.replaceAll(w -> w.substring(1, w.length() - 1));
-                    return (ArrayList<T>) splitted;
+                    split.replaceAll(w -> w.substring(1, w.length() - 1));
+                    return (ArrayList<T>) split;
                 }
             } catch (Exception exception) {
                 exception.printStackTrace();

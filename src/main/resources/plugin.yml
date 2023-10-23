@@ -1,7 +1,7 @@
 name: FelmonAPI
 version: '${project.version}'
-main: ru.aniby.felmonapi.FelmonAPI
+main: net.aniby.felmonapi.FelmonAPI
 api-version: '1.20'
 authors: [An1by]
 description: API for Felmon Plugins
-website: https://aniby.ru/
+website: https://aniby.net/

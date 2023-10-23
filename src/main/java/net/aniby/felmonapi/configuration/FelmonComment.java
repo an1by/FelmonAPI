@@ -1,4 +1,4 @@
-package ru.aniby.felmonapi.configuration;
+package net.aniby.felmonapi.configuration;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,4 +1,4 @@
-package ru.aniby.felmonapi.database;
+package net.aniby.felmonapi.database;
 
 import java.lang.reflect.InvocationTargetException;
 

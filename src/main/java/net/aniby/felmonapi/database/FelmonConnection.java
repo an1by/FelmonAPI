@@ -1,6 +1,5 @@
-package ru.aniby.felmonapi.database;
+package net.aniby.felmonapi.database;
 
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,8 +9,11 @@ import java.sql.SQLException;
 
 public class FelmonConnection {
     protected final @NotNull String[] connectionData;
-    @Getter
     private @Nullable Connection connection;
+
+    public Connection getConnection() {
+        return connection;
+    }
 
     protected FelmonConnection(@NotNull String[] connectionData) throws SQLException {
         this.connectionData = connectionData;
@@ -40,7 +42,8 @@ public class FelmonConnection {
                     this.connection = DriverManager.getConnection(connectionData[0], connectionData[1], connectionData[2]);
                 return true;
             }
-        } catch (SQLException ignored) {}
+        } catch (SQLException ignored) {
+        }
         new RuntimeException("Database reconnect error!").printStackTrace();
         return false;
     }

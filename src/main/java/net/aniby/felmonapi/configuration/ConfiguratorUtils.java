@@ -1,10 +1,11 @@
-package ru.aniby.felmonapi.configuration;
+package net.aniby.felmonapi.configuration;
 
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import ru.aniby.felmonapi.category.FelmonComponent;
+import net.aniby.felmonapi.category.FelmonComponent;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,7 +28,6 @@ public class ConfiguratorUtils {
             if (!file.exists()) {
                 file.getParentFile().mkdirs();
                 file.createNewFile();
-//            plugin.saveResource(file.getName(), true);
             }
         } catch (IOException exception) {
             exception.printStackTrace();
@@ -80,8 +80,16 @@ public class ConfiguratorUtils {
                 }
                 return valueString.toString();
             }
-            if (field.getType().equals(Map.class) || field.getType().equals(HashMap.class)) {
-                Map<String, Object> map = (Map<String, Object>) field.get(null);
+
+            Class<?> type = field.getType();
+            if (type.equals(Map.class) || type.equals(HashMap.class) || type.equals(ItemStack.class)) {
+                Map<String, Object> map;
+                if (type.equals(ItemStack.class)) {
+                    if (value == null)
+                        return "\"\"";
+                    map = ((ItemStack) value).serialize();
+                } else map = (Map<String, Object>) field.get(null);
+
                 if (map != null && !map.isEmpty()) {
                     for (String key : map.keySet()) {
                         Object val = map.get(key);
@@ -96,11 +104,13 @@ public class ConfiguratorUtils {
             if (value == null)
                 value = "";
 
-            if (field.getType().equals(FelmonComponent.class)) {
-                valueString.append("\"" + ((FelmonComponent) value).getSource() + "\"");
-            } else if (field.getType().equals(String.class) || field.getType().equals(Short.class) || field.getType().equals(short.class) || field.getType().equals(Character.class) || field.getType().equals(char.class)) {
+            if (type.equals(FelmonComponent.class)) {
+                valueString.append("\"").append(((FelmonComponent) value).getSource()).append("\"");
+            }
+            else if (type.equals(String.class) || type.equals(Short.class) || type.equals(short.class) || type.equals(Character.class) || type.equals(char.class)) {
                 valueString = new StringBuilder("\"" + value + "\"");
-            } else valueString.append(value);
+            }
+            else valueString.append(value);
             return valueString.toString();
         } catch (IllegalAccessException ignored) {
             return "";
